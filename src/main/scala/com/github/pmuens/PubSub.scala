@@ -6,7 +6,7 @@ import com.github.pmuens.Main.consumeFromKafka
 // 2. Run the producer (watch the consumers log output)
 object Produce extends App {
   override def main(args: Array[String]): Unit = {
-    val topic = "kafka-test"
+    val topic = "pubsub-test"
 
     writeToKafka(topic, "message", "Hello World!")
   }
@@ -15,7 +15,7 @@ object Produce extends App {
 // 1. Run the consumer
 object Consume extends App{
   override def main(args: Array[String]): Unit = {
-    val topic = "kafka-test"
+    val topic = "pubsub-test"
 
     consumeFromKafka(topic)
   }
