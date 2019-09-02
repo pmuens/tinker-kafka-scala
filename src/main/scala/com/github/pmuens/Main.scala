@@ -5,6 +5,8 @@ import java.util.Properties
 
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
+import org.apache.kafka.common.serialization.Serdes
+import org.apache.kafka.streams.{KafkaStreams, StreamsBuilder}
 
 import scala.collection.JavaConverters._
 
@@ -43,5 +45,24 @@ object Main {
         println(data.value())
       }
     }
+  }
+
+  def kafkaStreamForwarder(appId: String, sourceTopic: String, sinkTopic: String): Unit = {
+    val config = {
+      val props = new Properties()
+      props.put("application.id", appId)
+      props.put("bootstrap.servers", server)
+      props.put("default.key.serde", Serdes.String().getClass)
+      props.put("default.value.serde", Serdes.String().getClass)
+      props
+    }
+
+    val builder = new StreamsBuilder()
+
+    val sourceStream = builder.stream[String, String](sourceTopic)
+    sourceStream.to(sinkTopic)
+
+    val stream = new KafkaStreams(builder.build(), config)
+    stream.start()
   }
 }
